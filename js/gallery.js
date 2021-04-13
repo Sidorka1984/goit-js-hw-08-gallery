@@ -1,11 +1,11 @@
 import images from '../gallery-items.js';
 // console.log(images);
 const refs = {
-  gallery: document.querySelector(".js-gallery"),
-  lightbox: document.querySelector(".lightbox"),
+  gallery: document.querySelector('.js-gallery'),
+  lightbox: document.querySelector('.lightbox'),
   btn: document.querySelector('[data-action="close-lightbox"]'),
   modal: document.querySelector(".lightbox__content"),
-  lightbox__image: document.querySelector(".lightbox__image"),
+  lightbox__image: document.querySelector('.lightbox__image'),
   closeOverlay: document.querySelector('.lightbox__overlay'),
 };
 // console.log(refs);
@@ -26,12 +26,14 @@ function createGalleryItem(images) {
               src="${preview}"
               data-source="${original}"
               alt="${description}"
+              
             />
           </a>
         </li>`
         })
         .join('');
 }
+
 refs.gallery.addEventListener('click', onGalleryClick);
 
 function onGalleryClick(evt) {
@@ -41,13 +43,13 @@ function onGalleryClick(evt) {
       return;
   }
   
-   if (evt.target.tagName  === "IMG") {
-    refs.lightbox.classList.add("is-open");
+  if (evt.target.tagName === 'IMG') {
+    refs.lightbox.classList.add('is-open');
     refs.lightbox__image.src = evt.target.dataset.source;
     refs.lightbox__image.alt = evt.target.alt;
   }
   window.addEventListener("keydown", onEscPress);
-  window.addEventListener("keydown", changeArrowImg);
+
 }
 
 refs.btn.addEventListener("click", onCloseButton);
@@ -56,11 +58,11 @@ refs.closeOverlay.addEventListener('click', onCloseButton);
 
 function onCloseButton(evt) {
 
-  refs.lightbox.classList.remove("is-open");
+  refs.lightbox.classList.remove('is-open');
   refs.lightbox__image.src = '';
   refs.lightbox__image.alt = '';
   window.removeEventListener("keydown", onEscPress);
-  window.removeEventListener("keydown", changeArrowImg);
+ 
 }
 
 function closeModal(evt) {
@@ -76,17 +78,56 @@ function onEscPress(evt) {
   } 
   
 }
+let imagesEl = document.querySelectorAll('img[data-source]');
+console.log(imagesEl);
 
-function changeArrowImg(evt) {
-  console.log(evt.code);
-  const ArrowRight = e.code === "ArrowRight";
-  const ArrowLeft = e.code === "ArrowLeft";
-  let currentImg = refs.lightbox__image.src;
-  images.forEach((evt, index, array) => {
-    const nextEvt = array[index + 1];
-    
-  })
+window.addEventListener('keydown', changeArrowEl);
+
+
+function onArrowLeft() {
+  for (let i = 0; i < imagesEl.length; i += 1) {
+         let step = 0;
+                  
+         if (imagesEl[i].alt === refs.lightbox__image.alt) {
+             step = i - 1;
+            if (step < 0) {
+                step = imagesEl.length -1;
+                }
+             const nextImgAlt = imagesEl[step].alt;
+             const nextImgUrl = imagesEl[step].dataset.source;
+            
+                    refs.lightbox__image.alt = nextImgAlt;
+             return refs.lightbox__image.src = nextImgUrl;
+              };
+                       
+      };
+}
+
+function onArrowRight() {
+  for (let i = 0; i < imagesEl.length; i += 1) {
+         let step = 0;
+                  
+         if (imagesEl[i].alt === refs.lightbox__image.alt) {
+             step = i + 1;
+            if (step > imagesEl.length - 1) {
+                step = 0;
+                }
+             const nextImgAlt = imagesEl[step].alt;
+             const nextImgUrl = imagesEl[step].dataset.source;
+            
+                    refs.lightbox__image.alt = nextImgAlt;
+             return refs.lightbox__image.src = nextImgUrl;
+              };
+                       
+      };
 }
 
 
-
+function changeArrowEl(evt) {
+     if (evt.code === 'ArrowRight') {
+                  onArrowRight();
+    }
+    if (evt.code === 'ArrowLeft') {
+                  onArrowLeft();
+    }
+};
